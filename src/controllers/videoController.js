@@ -1,4 +1,9 @@
-export const home = (req, res) => res.render("home");
+import Video from "../models/Video";
+
+export const home = async (req, res) => {
+  const videos = await Video.find({});
+  return res.render("home", { videos });
+};
 export const see = (req, res) => res.send("Watch");
 export const edit = (req, res) => res.send("Edit");
 export const search = (req, res) => res.send("Search");
