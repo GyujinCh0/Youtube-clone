@@ -1,12 +1,20 @@
+import res from "express/lib/response";
 import Video from "../models/Video";
 
 export const home = async (req, res) => {
   const videos = await Video.find({});
   return res.render("home", { videos });
 };
-export const see = (req, res) => res.send("Watch");
-export const edit = (req, res) => res.send("Edit");
+
+export const watch = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  return res.render("watch", { pageTitle: video.title, video });
+};
+export const getEdit = (req, res) => {};
+export const postEdit = (req, res) => res.send("Edit");
 export const search = (req, res) => res.send("Search");
+export const getUpload = (req, res) => {};
 
 export const postUpload = async (req, res) => {
   const { title, description, hashtags } = req.body;
