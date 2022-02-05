@@ -1,8 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import rootRouter from "./routers/rootRouter";
-import userRouter from "./routers/UserRouters";
-import videoRouter from "./routers/video Router";
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
 
 const app = express();
 
