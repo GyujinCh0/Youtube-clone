@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/GyujinCh0/Youtube-clone#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.2",
     "mongoose": "^6.1.8",
     "morgan": "^1.10.0",
