@@ -15,14 +15,21 @@ export const postJoin = async (req, res) => {
       errorMessage: "This username/email is already taken.",
     });
   }
-  await User.create({
-    name,
-    username,
-    email,
-    password,
-    location,
-  });
-  return res.redirect("/login");
+  try {
+    await User.create({
+      name,
+      username,
+      email,
+      password,
+      location,
+    });
+    return res.redirect("/login");
+  } catch (error) {
+    return res.status(400).render("join", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
+    });
+  }
 };
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Remove User");
