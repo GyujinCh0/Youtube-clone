@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import morgan from "morgan";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
@@ -13,6 +14,13 @@ app.set("views", process.cwd() + "/src/views");
 
 app.use(logger);
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: "sudo",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);
