@@ -1,6 +1,7 @@
 import express from "express";
 import session from "express-session";
 import morgan from "morgan";
+import { middleware } from "./middlewares";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
@@ -21,6 +22,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use(middleware);
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);

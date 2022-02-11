@@ -11,10 +11,16 @@ html(lang="ko")
           li
             a(href="/videos/upload") Upload Video
           li
-            a(href="/") Hom
-          li
-            a(href="/join")  Join
-          li
+            a(href="/") Home
+          if loggedIn 
+            li 
+              a(href="/logout") Log Out 
+            li 
+              a(href="/my-profile") #{loggedInUser.name}의 프로필
+          else
+            li
+              a(href="/join")  Join
+            li
             a(href="/login")  Login                        
           li
             a(href="/search") Search
