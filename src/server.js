@@ -1,11 +1,12 @@
 import express from "express";
-import session from "express-session";
 import morgan from "morgan";
-import { middleware } from "./middlewares";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import { localsMiddleware } from "./middlewares";
 import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
-
+console.log(process.env.DB_URL);
 const app = express();
 
 const logger = morgan("dev");
@@ -17,12 +18,13 @@ app.use(logger);
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "sudo",
-    resave: true,
-    saveUninitialized: true,
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
   })
 );
-app.use(middleware);
+app.use(localsMiddleware);
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);

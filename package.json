@@ -19,6 +19,8 @@
   "homepage": "https://github.com/GyujinCh0/Youtube-clone#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "connect-mongo": "^4.6.0",
+    "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "mongoose": "^6.1.8",

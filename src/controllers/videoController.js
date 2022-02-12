@@ -4,9 +4,6 @@ export const home = async (req, res) => {
   const videos = await Video.find({}).sort({ createdAt: "desc" });
   return res.render("home", { videos });
 };
-
-export const postEdit = (req, res) => res.send("Edit");
-export const search = (req, res) => res.send("Search");
 export const getUpload = (req, res) => {};
 
 export const watch = async (req, res) => {
