@@ -126,7 +126,41 @@ export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
 export const postEdit = (req, res) => {
-  return res.render("edit-profile");
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+  let errorMessages = {};
+  
+  const loggedInUser = await User.findById(userID);
+  if (loggedInUser.email !== email && (await User.exists({ email }))) {
+    errorMessages.email = "This email is already exists.";
+  }
+  if (loggedInUser.username !== username && (await User.exists({ username }))) {
+    errorMessages.username = "This username is already exists.";
+  }
+  
+  if (Object.keys(errorMessages).length !== 0) {
+    return res.render("edit-profile", {
+      pageTitle: "Edit Profile",
+      errorMessages,
+      formValues: { name, email, username, location },
+    });
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
+  return res.redirect("/users/edit");
 };
 export const remove = (req, res) => res.send("Remove User");
 export const logout = (req, res) => (req, res) => {
