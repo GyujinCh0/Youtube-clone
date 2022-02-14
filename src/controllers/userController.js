@@ -57,6 +57,7 @@ export const postLogin = async (req, res) => {
   return res.redirect("/");
 };
 export const startGithubLogin = (req, res) => {
+  console.log("깃허브 시작");
   const baseUrl = "https://github.com/login/oauth/authorize";
   const config = {
     client_id: process.env.GH_CLIENT,
@@ -65,6 +66,7 @@ export const startGithubLogin = (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
+
   return res.redirect(finalUrl);
 };
 
@@ -89,7 +91,7 @@ export const finishGithubLogin = async (req, res) => {
     const { access_token } = tokenRequest;
     const apiUrl = "https://api.github.com";
     const userData = await (
-      await fetch("https://api.github.com/user", {
+      await fetch(`${apiUrl}/user`, {
         headers: {
           Authorization: `token ${access_token}`,
         },
@@ -103,9 +105,12 @@ export const finishGithubLogin = async (req, res) => {
       })
     ).json();
     const emailObj = emailData.find((email) => email.primary === true && email.verified === true);
-    const user = await User.findOne({ email: emailObj.email });
+    if (!emailObj) {
+      return res.redirect("/login");
+    }
+    let user = await User.findOne({ email: emailObj.email });
     if (!user) {
-      const user = await User.create({
+      user = await User.create({
         avatarUrl: userData.avatar_url,
         name: userData.name,
         username: userData.login,
@@ -125,16 +130,17 @@ export const finishGithubLogin = async (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
-export const postEdit = (req, res) => {
+export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id },
+      user: { _id, avatarUrl},
     },
     body: { name, email, username, location },
   } = req;
   let errorMessages = {};
 
-  const loggedInUser = await User.findById(userID);
+  const loggedInUser = await User.findById(_id);
+  
   if (loggedInUser.email !== email && (await User.exists({ email }))) {
     errorMessages.email = "This email is already exists.";
   }
@@ -149,9 +155,11 @@ export const postEdit = (req, res) => {
       formValues: { name, email, username, location },
     });
   }
+
   const updatedUser = await User.findByIdAndUpdate(
     _id,
     {
+      avatarUrl: file ? file.path : avatarUrl,
       name,
       email,
       username,
@@ -168,7 +176,7 @@ export const getChangePassword = (req, res) => {
   }
   return res.render("users/change-password", { pageTitle: "Change Password" });
 };
-export const postChangePassword = (req, res) => {
+export const postChangePassword = async (req, res) => {
   const {
     session: {
       user: { _id },
@@ -194,7 +202,7 @@ export const postChangePassword = (req, res) => {
   return res.redirect("/users/logout");
 };
 export const remove = (req, res) => res.send("Remove User");
-export const logout = (req, res) => (req, res) => {
+export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
