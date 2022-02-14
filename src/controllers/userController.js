@@ -57,7 +57,6 @@ export const postLogin = async (req, res) => {
   return res.redirect("/");
 };
 export const startGithubLogin = (req, res) => {
-  console.log("깃허브 시작");
   const baseUrl = "https://github.com/login/oauth/authorize";
   const config = {
     client_id: process.env.GH_CLIENT,

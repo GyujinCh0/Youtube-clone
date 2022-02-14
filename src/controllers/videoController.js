@@ -1,11 +1,9 @@
 import Video from "../models/Video";
 
-
 export const home = async (req, res) => {
   const videos = await Video.find({}).sort({ createdAt: "desc" });
   return res.render("home", { videos });
 };
-export const getUpload = (req, res) => {};
 
 export const watch = async (req, res) => {
   const { id } = req.params;
@@ -39,17 +37,23 @@ export const postEdit = async (req, res) => {
   });
   return res.redirect(`/videos/${id}`);
 };
+export const getUpload = (req, res) => {
+  res.render("upload", { pageTitle: "Upload Video" });
+};
 
 export const postUpload = async (req, res) => {
+  const { path: fileUrl } = req.file;
   const { title, description, hashtags } = req.body;
   try {
     await Video.create({
       title,
       description,
+      fileUrl,
       hashtags: Video.formatHashtags(hashtags),
     });
     return res.redirect("/");
   } catch (error) {
+    console.log(error);
     return res.status(404).render("upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
