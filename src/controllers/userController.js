@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 
@@ -132,14 +133,14 @@ export const getEdit = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id, avatarUrl},
+      user: { _id, avatarUrl },
     },
     body: { name, email, username, location },
   } = req;
   let errorMessages = {};
 
   const loggedInUser = await User.findById(_id);
-  
+
   if (loggedInUser.email !== email && (await User.exists({ email }))) {
     errorMessages.email = "This email is already exists.";
   }
@@ -208,7 +209,7 @@ export const logout = (req, res) => {
 
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate("videos");
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User not found." });
   }
