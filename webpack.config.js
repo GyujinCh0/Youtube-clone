@@ -12,7 +12,7 @@ module.exports = {
   ],
   output: {
     filename: "js/main.js",
-    path: path.resolve(__dirname, "assets", "js"),
+    path: path.resolve(__dirname, "assets"),
     clean: true,
   },
   module: {
