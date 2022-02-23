@@ -19,7 +19,7 @@ block content
       div
         span#fullScreen
           i.fas.fa-expand
-   div.video__data
+  div.video__data
     p.video__title=video.title
     small.video__owner Uploaded by 
       a(href=`/users/${video.owner._id}`)=video.owner.name
@@ -28,6 +28,11 @@ block content
       a(href=`${video.id}/edit`) Edit Video &rarr;
       br
       a(href=`${video.id}/delete`) Delete Video &rarr;
-
+  if loggedIn
+    div.video__comments
+      form.video__comment-form#commentForm
+        textarea(cols="30", rows="10", placeholder="Write a nice commment...")
+        button Add Comment
 block scripts
   script(src="/static/js/videoPlayer.js") 
+  script(src="/static/js/commentSection.js") 
