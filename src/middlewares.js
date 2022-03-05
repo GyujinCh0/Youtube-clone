@@ -1,19 +1,28 @@
 import multer from "multer";
-import multerS3 from "multer-s3"
+import multerS3 from "multer-s3";
 import aws from "aws-sdk";
 
 const s3 = new aws.S3({
-  credentials:{
+  credentials: {
     accessKeyId: process.env.AWS_ID,
-    secretAccessKey:process.env.AWS_SECRET
-  }
-})
+    secretAccessKey: process.env.AWS_SECRET,
+  },
+});
 
-const multerUploader = multerS3({
-  s3:s3,
-  bucket:"youtube-cho",
-  acl:"public-read",
-})
+const isHeroku = process.env.NODE_ENV === "production";
+
+const s3ImageUploader = multerS3({
+  s3: s3,
+  bucket: "youtube-cho/images",
+  acl: "public-read",
+});
+
+const s3VideoUploader = multerS3({
+  s3: s3,
+  bucket: "youtube-cho/videos",
+  acl: "public-read",
+});
+
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "Youtube";
@@ -44,12 +53,12 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3000000,
   },
-  storage: multerUploader
+  storage: isHeroku ? s3ImageUploader : undefined,
 });
 export const videoUpload = multer({
   dest: "uploads/videos/",
   limits: {
     fileSize: 15000000,
   },
-  storage: multerUploader
+  storage: isHeroku ? s3VideoUploader : undefined,
 });
